@@ -27,9 +27,9 @@ class AuthController extends Controller
 
     public function me()
     {
-        $payload = Auth::guard('admin')->payload();
-        return $payload;
-        return new Response('get profile succeed');
+        $user = Auth::user();
+
+        return $this->success($user);
     }
 
     protected function respondWithToken($token)
