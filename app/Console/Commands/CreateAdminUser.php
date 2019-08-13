@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Admin;
+use App\Models\Administrator;
 use Illuminate\Console\Command;
 
 class CreateAdminUser extends Command
@@ -41,7 +41,7 @@ class CreateAdminUser extends Command
         $username = $this->ask('Please enter a username to login');
         $password = bcrypt($this->secret('Please enter a password to login'));
 
-        $user = new Admin(compact('username', 'password'));
+        $user = new Administrator(compact('username', 'password'));
         $user->save();
 
         $this->info("User [$username] created successfully.");

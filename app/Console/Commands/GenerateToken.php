@@ -42,7 +42,7 @@ class GenerateToken extends Command
         $userId = $this->ask('Please enter a user id');
         $days = $this->ask('Please enter a expired days');
 
-        $userModel = $userType === 'admin' ? 'App\Models\Admin' : 'App\Models\User';
+        $userModel = $userType === 'admin' ? 'App\Models\Administrator' : 'App\Models\User';
 
         $user = $userModel::find($userId);
         if (!$user) {
