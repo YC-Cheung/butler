@@ -40,8 +40,8 @@ class CreateAdminUser extends Command
     {
         $username = $this->ask('Please enter a username to login');
         $password = bcrypt($this->secret('Please enter a password to login'));
-
-        $user = new Administrator(compact('username', 'password'));
+        $name = $this->ask('Please enter a name to display');
+        $user = new Administrator(compact('username', 'password', 'name'));
         $user->save();
 
         $this->info("User [$username] created successfully.");
