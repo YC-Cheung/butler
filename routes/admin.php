@@ -1,7 +1,11 @@
 <?php
-Route::get('test', 'IndexController@index');
+Route::get('test', 'IndexController@test');
 Route::post('login', 'AuthController@login');
-//Route::get('me', 'AuthController@me');
-Route::group(['middleware' => 'auth:admin'], function () {
-    Route::get('me', 'AuthController@me');
+
+Route::middleware([
+    'auth:admin'
+])->group(function () {
+    Route::resource('users', 'UserController')->names('admin.users');
+    Route::resource('roles', 'RoleController')->names('admin.roles');
+    Route::resource('permissions', 'PermissionController')->names('admin.permissions');
 });
