@@ -3,7 +3,6 @@ Route::get('test', 'IndexController@test');
 Route::post('login', 'AuthController@login');
 
 Route::middleware([
-    'auth:admin'
 ])->group(function () {
     Route::resource('users', 'UserController')->names('admin.users');
     Route::resource('roles', 'RoleController')->names('admin.roles');
