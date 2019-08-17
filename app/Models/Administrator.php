@@ -32,12 +32,12 @@ class Administrator extends Authenticatable implements JWTSubject
 
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'admin_role_users', 'user_id', 'role_id');
+        return $this->belongsToMany(Role::class, 'admin_role_users', 'user_id', 'role_id')->withTimestamps();
     }
 
     public function permissions()
     {
-        return $this->belongsToMany(Permission::class, 'admin_user_permissions', 'user_id', 'permission_id');
+        return $this->belongsToMany(Permission::class, 'admin_user_permissions', 'user_id', 'permission_id')->withTimestamps();
     }
 
     public function getJWTIdentifier()

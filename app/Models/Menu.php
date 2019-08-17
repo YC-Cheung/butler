@@ -12,7 +12,7 @@ class Menu extends Model
         ModelTree::allNodesQuery as parentAllNodesQuery;
     }
 
-    protected $table = 'admin_menus';
+    protected $table = 'admin_menu';
 
     protected $fillable = [
         'parent_id', 'order', 'name', 'title', 'component', 'icon', 'path', 'is_cache', 'is_hidden', 'permission',
@@ -25,7 +25,7 @@ class Menu extends Model
      */
     public function roles()
     {
-        return $this->belongsToMany(Role::class, 'admin_role_menu', 'menu_id', 'role_id');
+        return $this->belongsToMany(Role::class, 'admin_role_menu', 'menu_id', 'role_id')->withTimestamps();
     }
 
     /**

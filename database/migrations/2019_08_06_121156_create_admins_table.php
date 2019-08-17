@@ -41,7 +41,7 @@ class CreateAdminsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('admin_menus', function (Blueprint $table) {
+        Schema::create('admin_menu', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('parent_id')->default(0);
             $table->integer('order')->default(0);
@@ -56,21 +56,21 @@ class CreateAdminsTable extends Migration
             $table->timestamps();
         });
 
-        Schema::create('admin_role_user', function (Blueprint $table) {
+        Schema::create('admin_role_users', function (Blueprint $table) {
             $table->integer('role_id');
             $table->integer('user_id');
             $table->index(['role_id', 'user_id']);
             $table->timestamps();
         });
 
-        Schema::create('admin_role_permission', function (Blueprint $table) {
+        Schema::create('admin_role_permissions', function (Blueprint $table) {
             $table->integer('role_id');
             $table->integer('permission_id');
             $table->index(['role_id', 'permission_id']);
             $table->timestamps();
         });
 
-        Schema::create('admin_user_permission', function (Blueprint $table) {
+        Schema::create('admin_user_permissions', function (Blueprint $table) {
             $table->integer('user_id');
             $table->integer('permission_id');
             $table->index(['user_id', 'permission_id']);
@@ -106,7 +106,7 @@ class CreateAdminsTable extends Migration
         Schema::dropIfExists('admin_users');
         Schema::dropIfExists('admin_roles');
         Schema::dropIfExists('admin_permissions');
-        Schema::dropIfExists('admin_menus');
+        Schema::dropIfExists('admin_menu');
         Schema::dropIfExists('admin_role_users');
         Schema::dropIfExists('admin_role_permissions');
         Schema::dropIfExists('admin_role_menu');

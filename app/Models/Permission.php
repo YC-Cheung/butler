@@ -16,7 +16,7 @@ class Permission extends Model
 
     public function roles()
     {
-        return $this->belongsToMany('admin_role_permission', 'permission_id', 'role_id');
+        return $this->belongsToMany('admin_role_permissions', 'permission_id', 'role_id')->withTimestamps();
     }
 
     public function getHttpPathAttribute($path)
