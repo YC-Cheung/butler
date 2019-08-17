@@ -4,7 +4,7 @@ Route::post('login', 'AuthController@login');
 
 Route::middleware([
 ])->group(function () {
-    Route::resource('users', 'UserController')->names('admin.users');
-    Route::resource('roles', 'RoleController')->names('admin.roles');
-    Route::resource('permissions', 'PermissionController')->names('admin.permissions');
+    Route::apiResource('users', 'UserController')->names('admin.users');
+    Route::apiResource('roles', 'RoleController')->names('admin.roles');
+    Route::apiResource('permissions', 'PermissionController')->names('admin.permissions');
 });

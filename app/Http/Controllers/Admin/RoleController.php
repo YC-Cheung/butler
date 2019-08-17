@@ -2,81 +2,44 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\Admin\RoleRequest;
+use App\Http\Resources\Admin\RoleResource;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class RoleController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $roles = Role::query()
-            ->with('permissions')
-            ->orderByDesc('id')
-            ->get()->toArray();
-
-        return $roles;
+        return RoleResource::collection(Role::paginate());
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
+    public function store(RoleRequest $request)
     {
-        //
+        $inputs = $request->validated();
+        Role::create($inputs);
+
+        return $this->message('角色创建成功');
     }
 
-    public function store(Request $request)
+    public function show(Role $role)
     {
-        $input = $request->validate([
-            'slug' => 'required|unique:admin_roles',
-            'name' =>'required|unique:admin_roles',
-        ]);
-
-        Role::create($input);
-        return $this->message('创建角色成功');
+        return RoleResource::make($role);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function update(RoleRequest $request, Role $role)
     {
-        //
-    }
+        $inputs = $request->validated();
+        $role->update($inputs);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
+        return $this->message('角色更新成功');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
