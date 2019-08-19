@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasPermissions;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -9,6 +10,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 class Administrator extends Authenticatable implements JWTSubject
 {
     use Notifiable;
+    use HasPermissions;
 
     protected $table = 'admin_users';
 
