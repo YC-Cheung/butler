@@ -1,0 +1,1 @@
+<h1>Halo Laravel!</h1>
