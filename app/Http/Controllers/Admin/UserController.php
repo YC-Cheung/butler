@@ -43,6 +43,13 @@ class UserController extends Controller
         $inputs = $request->validated();
         $user->update($inputs);
 
+        if (isset($inputs['roles'])) {
+            $user->roles()->sync($inputs['roles']);
+        }
+        if (isset($inputs['permissions'])) {
+            $user->permissions()->sync($inputs['permissions']);
+        }
+
         return $this->message('用户更新成功');
     }
 

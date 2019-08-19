@@ -33,6 +33,10 @@ class RoleController extends Controller
         $inputs = $request->validated();
         $role->update($inputs);
 
+        if (isset($inputs['permissions'])) {
+            $role->permissions()->sync($inputs['permissions']);
+        }
+
         return $this->message('角色更新成功');
     }
 
