@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Resources\Json\JsonResource;
 use Symfony\Component\HttpFoundation\Response as FoundationResponse;
 
 trait ApiResponse
@@ -12,7 +13,6 @@ trait ApiResponse
      */
     protected $statusCode = FoundationResponse::HTTP_OK;
 
-
     /**
      * @return int
      */
@@ -21,12 +21,11 @@ trait ApiResponse
         return $this->statusCode;
     }
 
-
     /**
      * @param int $statusCode
      * @return $this
      */
-    public function setStatusCode(int $statusCode): ApiResponse
+    public function setStatusCode(int $statusCode)
     {
         $this->statusCode = $statusCode;
 
@@ -34,36 +33,33 @@ trait ApiResponse
     }
 
     /**
-     * @param array $data
+     * @param array|null $data
      * @param array $headers
      * @return JsonResponse
      */
-    public function respond(array $data, array $headers = []): JsonResponse
+    public function respond(?array $data, array $headers = [])
     {
+        if ($data && !isset($data['data'])) {
+            $data = ['data' => $data];
+        }
         return new JsonResponse($data, $this->statusCode, $headers);
     }
 
-
     /**
-     * @param $status
-     * @param array $data
-     * @param int|null $code
+     * @param $data
+     * @param string $status
      * @return JsonResponse
      */
-    public function status($status, array $data, ?int $code = null): JsonResponse
+    public function success($data, $headers = [])
     {
-        if ($code) {
-            $this->setStatusCode($code);
+        if ($data instanceof JsonResource) {
+            return $data
+                ->response()
+                ->withHeaders($headers)
+                ->setStatusCode(FoundationResponse::HTTP_OK);
         }
 
-        $status = [
-            'status' => $status,
-            'code' => $this->statusCode
-        ];
-
-        $data = array_merge($status, $data);
-
-        return $this->respond($data);
+        return $this->respond($data, $headers);
     }
 
     /**
@@ -72,51 +68,29 @@ trait ApiResponse
      * @param string $status
      * @return JsonResponse
      */
-    public function failed($message, $code = FoundationResponse::HTTP_BAD_REQUEST, $status = 'error')
+    public function failed($message, $code = FoundationResponse::HTTP_BAD_REQUEST)
     {
-        return $this->setStatusCode($code)->message($message, $status);
+        $data = ['message' => $message];
+
+        return $this->setStatusCode($code)->respond($data);
     }
 
     /**
-     * @param string $message
-     * @param null|string $status
+     * @param array|null $data
+     * @param array $headers
      * @return JsonResponse
      */
-    public function message(string $message, ?string $status = 'success'): JsonResponse
+    public function created(?array $data = null, array $headers = [])
     {
-        return $this->status($status, [
-            'message' => $message
-        ]);
+        return $this->setStatusCode(FoundationResponse::HTTP_CREATED)->respond($data, $headers);
     }
 
     /**
-     * @param string $message
      * @return JsonResponse
      */
-    public function internalError($message = 'Internal Error!')
+    public function noContent()
     {
-
-        return $this->failed($message, FoundationResponse::HTTP_INTERNAL_SERVER_ERROR);
-    }
-
-    /**
-     * @param string $message
-     * @return JsonResponse
-     */
-    public function created($message = 'created')
-    {
-        return $this->setStatusCode(FoundationResponse::HTTP_CREATED)
-            ->message($message);
-    }
-
-    /**
-     * @param $data
-     * @param string $status
-     * @return JsonResponse
-     */
-    public function success($data, $status = 'success')
-    {
-        return $this->status($status, compact('data'));
+        return $this->setStatusCode(FoundationResponse::HTTP_NO_CONTENT)->respond(null);
     }
 
     /**
