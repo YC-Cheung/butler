@@ -46,6 +46,7 @@ class Kernel extends HttpKernel
             'throttle:60,1',
             'bindings',
             'forced-json',
+            'api-cors',
         ]
     ];
 
@@ -67,6 +68,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'forced-json' => \App\Http\Middleware\ForcedJson::class,
+        'api-cors' => \Barryvdh\Cors\HandleCors::class,
     ];
 
     /**
