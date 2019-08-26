@@ -8,4 +8,5 @@ Route::middleware([
     Route::apiResource('users', 'UserController')->names('admin.users');
     Route::apiResource('roles', 'RoleController')->names('admin.roles');
     Route::apiResource('permissions', 'PermissionController')->names('admin.permissions');
+    Route::get('auth/info', 'AuthController@userInfo')->name('admin.user.info');
 });

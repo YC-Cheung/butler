@@ -12,7 +12,9 @@ class UserController extends Controller
 {
     public function index()
     {
-        return UserResource::collection(Administrator::paginate());
+        $data = UserResource::collection(Administrator::paginate());
+
+        return $this->success($data);
     }
 
     public function store(UserRequest $request)
@@ -30,12 +32,12 @@ class UserController extends Controller
             $user->permissions()->attch($permissions);
         }
 
-        return $this->message('用户创建成功');
+        return $this->created();
     }
 
     public function show(Administrator $user)
     {
-        return UserResource::make($user);
+        return $this->success(UserResource::make($user));
     }
 
     public function update(UserRequest $request, Administrator $user)
