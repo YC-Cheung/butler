@@ -10,9 +10,11 @@ use App\Http\Controllers\Controller;
 
 class RoleController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return RoleResource::collection(Role::paginate());
+        $roles = $request->get('all') ? Role::get() : Role::paginate();
+
+        return RoleResource::collection($roles);
     }
 
     public function store(RoleRequest $request)
