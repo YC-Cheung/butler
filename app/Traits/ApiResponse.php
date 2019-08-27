@@ -45,12 +45,13 @@ trait ApiResponse
         return new JsonResponse($data, $this->statusCode, $headers);
     }
 
+
     /**
-     * @param $data
-     * @param string $status
+     * @param null $data
+     * @param array $headers
      * @return JsonResponse
      */
-    public function success($data, $headers = [])
+    public function success($data = null, $headers = [])
     {
         if ($data instanceof JsonResource) {
             return $data
@@ -63,9 +64,8 @@ trait ApiResponse
     }
 
     /**
-     * @param null|string $message
+     * @param $message
      * @param int $code
-     * @param string $status
      * @return JsonResponse
      */
     public function failed($message, $code = FoundationResponse::HTTP_BAD_REQUEST)
@@ -76,12 +76,18 @@ trait ApiResponse
     }
 
     /**
-     * @param array|null $data
+     * @param null $data
      * @param array $headers
      * @return JsonResponse
      */
-    public function created(?array $data = null, array $headers = [])
+    public function created($data = null, array $headers = [])
     {
+        if ($data instanceof JsonResource) {
+            return $data
+                ->response()
+                ->withHeaders($headers)
+                ->setStatusCode(FoundationResponse::HTTP_CREATED);
+        }
         return $this->setStatusCode(FoundationResponse::HTTP_CREATED)->respond($data, $headers);
     }
 

@@ -32,7 +32,7 @@ class UserController extends Controller
             $user->permissions()->attch($permissions);
         }
 
-        return $this->created();
+        return $this->created(UserResource::make($user));
     }
 
     public function show(Administrator $user)
@@ -52,7 +52,7 @@ class UserController extends Controller
             $user->permissions()->sync($inputs['permissions']);
         }
 
-        return $this->message('用户更新成功');
+        return $this->created(UserResource::make($user));
     }
 
     /**
