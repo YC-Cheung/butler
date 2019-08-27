@@ -4,7 +4,6 @@ namespace App\Models;
 
 use App\Traits\ModelTree;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 
 class Menu extends Model
 {
