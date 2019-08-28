@@ -7,12 +7,14 @@ use App\Http\Resources\Admin\UserResource;
 use App\Models\Administrator;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $data = UserResource::collection(Administrator::paginate());
+        $data = UserResource::collection(Administrator::with('roles')->paginate())->hide(['id', 'name', 'roles.*.id']);
 
         return $this->success($data);
     }
@@ -37,7 +39,7 @@ class UserController extends Controller
 
     public function show(Administrator $user)
     {
-        return $this->success(UserResource::make($user));
+        return $this->success(UserResource::make($user)->hide(['id']));
     }
 
     public function update(UserRequest $request, Administrator $user)
@@ -56,13 +58,14 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @param Administrator $user
+     * @return \Illuminate\Http\JsonResponse
+     * @throws \Exception
      */
-    public function destroy($id)
+    public function destroy(Administrator $user)
     {
-        //
+        $user->delete();
+
+        return $this->noContent();
     }
 }

@@ -53,4 +53,14 @@ class Administrator extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($user) {
+            $user->roles()->detach();
+            $user->permissions()->detach();
+        });
+    }
 }

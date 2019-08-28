@@ -32,7 +32,6 @@ class AuthController extends Controller
     public function userInfo()
     {
         $user = Auth::user();
-
         return $this->success(UserResource::make($user));
     }
 }

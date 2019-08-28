@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
@@ -39,6 +40,35 @@ class MacroServiceProvider extends ServiceProvider
         Collection::macro('snakeCaseKeys', function () {
             return $this->keyByRecursive(function ($value, $key) {
                 return Str::snake($key);
+            });
+        });
+
+        Collection::macro('deepForget', function ($fields) {
+            return $this->map(function($item) use ($fields) {
+                if (is_array($item) || is_object($item)) {
+                    $shallowFields = [];
+                    $deepFields = [];
+                    foreach ($fields as $field) {
+                        if (strpos($field, '.*.')) {
+                            $keys = explode('.*.', $field);
+                            if (count($keys) === 2 && isset($item[$keys[0]])) {
+                                $deepFields[$keys[0]] = $keys[1];
+                            }
+                        } else {
+                            $shallowFields[] = $field;
+                        }
+                    }
+                    Arr::forget($item, $shallowFields);
+                    foreach ($deepFields as $key => $val) {
+                        $item[$key] = array_map(function ($childItem) use ($val) {
+                            Arr::forget($childItem, $val);
+                            return $childItem;
+                        }, $item[$key]);
+                    }
+
+                }
+
+                return $item;
             });
         });
     }

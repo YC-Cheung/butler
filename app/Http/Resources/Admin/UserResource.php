@@ -15,6 +15,15 @@ class UserResource extends Resource
      */
     public function toArray($request)
     {
-        return parent::toArray($request);
+        return [
+            'id' => $this->id,
+            'username' => $this->username,
+            'name' => $this->name,
+            'avatar' => $this->avatar,
+            'roles' => RoleResource::collection($this->whenLoaded('roles')),
+            'created_at' => (string)$this->created_at,
+            'updated_at' => (string)$this->updated_at
+        ];
     }
+
 }
