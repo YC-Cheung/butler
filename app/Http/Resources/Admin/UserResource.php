@@ -7,12 +7,6 @@ use App\Http\Resources\Resource;
 
 class UserResource extends Resource
 {
-    /**
-     * Transform the resource into an array.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @return array
-     */
     public function toArray($request)
     {
         return $this->filterFields([
@@ -21,6 +15,7 @@ class UserResource extends Resource
             'name' => $this->name,
             'avatar' => $this->avatar,
             'roles' => RoleResource::collection($this->whenLoaded('roles')),
+            'roles_ids' => $this->whenIds('roles'),
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at
         ]);

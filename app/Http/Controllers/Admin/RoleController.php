@@ -52,4 +52,16 @@ class RoleController extends Controller
     {
         //
     }
+
+    /**
+     * 获取所有角色选项
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getOption()
+    {
+        $data = RoleResource::collection(Role::all())->hide(['created_at', 'updated_at']);
+
+        return $this->success($data);
+    }
 }

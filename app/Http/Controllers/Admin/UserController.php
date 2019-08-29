@@ -5,16 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\Admin\UserRequest;
 use App\Http\Resources\Admin\UserResource;
 use App\Models\Administrator;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
 
 class UserController extends Controller
 {
     public function index()
     {
-        $data = UserResource::collection(Administrator::with('roles')->paginate())->hide(['id', 'name', 'roles.*.id']);
+        $data = UserResource::collection(Administrator::with('roles')->paginate())->withIds(['roles']);
 
         return $this->success($data);
     }
@@ -39,7 +36,7 @@ class UserController extends Controller
 
     public function show(Administrator $user)
     {
-        return $this->success(UserResource::make($user)->hide(['id']));
+        return $this->success(UserResource::make($user->load('roles'))->withIds(['roles']));
     }
 
     public function update(UserRequest $request, Administrator $user)
@@ -54,7 +51,7 @@ class UserController extends Controller
             $user->permissions()->sync($inputs['permissions']);
         }
 
-        return $this->created(UserResource::make($user));
+        return $this->created(UserResource::make($user->load('roles'))->withIds(['roles']));
     }
 
     /**
