@@ -43,8 +43,39 @@ class MacroServiceProvider extends ServiceProvider
             });
         });
 
+        Collection::macro('deepExcept', function ($fields = []) {
+            if (!is_array($fields) || empty($fields)) {
+                return $this;
+            }
+
+            $shallowFields = [];
+            $deepFields = [];
+
+            foreach ($fields as $field) {
+                if (strpos($field, '.*.')) {
+                    $keys = explode('.*.', $field);
+                    if (count($keys) === 2 && $this->has($keys[0])) {
+                        $deepFields[$keys[0]][] = $keys[1];
+                    }
+                } else {
+                    $shallowFields[] = $field;
+                }
+            }
+
+            $items = $this->except($shallowFields);
+            foreach ($deepFields as $key => $val) {
+                if (is_array($items[$key]) || is_object($items[$key])) {
+                    $items[$key] = collect($items[$key])->map(function ($childItem) use ($val) {
+                        return collect($childItem)->except($val);
+                    });
+                }
+            }
+
+            return $items;
+        });
+
         Collection::macro('deepForget', function ($fields) {
-            return $this->map(function($item) use ($fields) {
+            return $this->map(function ($item) use ($fields) {
                 if (is_array($item) || is_object($item)) {
                     $shallowFields = [];
                     $deepFields = [];

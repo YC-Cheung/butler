@@ -15,7 +15,7 @@ class UserResource extends Resource
      */
     public function toArray($request)
     {
-        return [
+        return $this->filterFields([
             'id' => $this->id,
             'username' => $this->username,
             'name' => $this->name,
@@ -23,7 +23,6 @@ class UserResource extends Resource
             'roles' => RoleResource::collection($this->whenLoaded('roles')),
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at
-        ];
+        ]);
     }
-
 }

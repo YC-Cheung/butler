@@ -3,13 +3,11 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Collection;
 
 class Resource extends JsonResource
 {
-    protected $withoutFields = [];
-
-    protected $timestampFields = ['created_at', 'updated_at', 'xxx_at'];
+    protected $showFields = [];
+    protected $hideFields = [];
 
     public static function collection($resource)
     {
@@ -18,28 +16,43 @@ class Resource extends JsonResource
 
     public function toArray($request)
     {
-        return parent::toArray($request);
+        if (is_null($this->resource)) {
+            return [];
+        }
+
+        $array = is_array($this->resource)
+            ? $this->resource
+            : $this->resource->toArray();
+
+        return $this->filterFields($array);
     }
 
-    public function hide(array $fields)
+    public function show(array $fields)
     {
-        $this->withoutFields = $fields;
+        $this->showFields = $fields;
 
         return $this;
     }
 
-    public function withResponse($request, $response)
+    public function hide(array $fields)
     {
-        $data = $response->getData(true);
+        $this->hideFields = $fields;
 
-        if (!empty($this->withoutFields)) {
-            $wrap = self::$wrap;
-            if ($wrap) {
-                $collection = new Collection($data[$wrap]);
-                $data[$wrap] = $collection->deepForget($this->withoutFields);
-            }
-        }
+        return $this;
+    }
 
-        $response->setData($data);
+    protected function filterFields($array)
+    {
+        $showFields = $this->showFields;
+        $hideFields = $this->hideFields;
+
+        return collect($array)
+            ->when(!empty($showFields), function ($collection) use ($showFields) {
+                return $collection->only($showFields);
+            })
+            ->when(!empty($hideFields), function ($collection) use ($hideFields) {
+                return $collection->deepExcept($hideFields);
+            })
+            ->toArray();
     }
 }
