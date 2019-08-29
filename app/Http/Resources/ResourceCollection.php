@@ -8,6 +8,7 @@ class ResourceCollection extends AnonymousResourceCollection
 {
     protected $showFields = [];
     protected $hideFields = [];
+    protected $idsRelationship = [];
 
     public function show(array $fields)
     {
@@ -23,6 +24,13 @@ class ResourceCollection extends AnonymousResourceCollection
         return $this;
     }
 
+    public function withIds(array $relationships)
+    {
+        $this->idsRelationship = $relationships;
+
+        return $this;
+    }
+
     public function toArray($request)
     {
         return $this->processCollection($request);
@@ -31,7 +39,7 @@ class ResourceCollection extends AnonymousResourceCollection
     protected function processCollection($request)
     {
         return $this->collection->map(function (Resource $resource) use ($request) {
-            return $resource->show($this->showFields)->hide($this->hideFields)->toArray($request);
+            return $resource->show($this->showFields)->hide($this->hideFields)->withIds($this->idsRelationship)->toArray($request);
         })->all();
     }
 
