@@ -22,4 +22,15 @@ class Role extends Model
     {
         return $this->belongsToMany(Menu::class, 'admin_role_menu', 'role_id', 'menu_id')->withTimestamps();
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function($role) {
+            $role->permissions()->detach();
+            $role->administrators()->detach();
+            $role->menus()->detach();
+        });
+    }
 }
