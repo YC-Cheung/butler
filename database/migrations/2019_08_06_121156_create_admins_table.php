@@ -29,6 +29,7 @@ class CreateAdminsTable extends Migration
             $table->increments('id');
             $table->string('name', 50)->unique();
             $table->string('slug', 50)->unique();
+            $table->string('description', 50)->nullable();
             $table->timestamps();
         });
 
@@ -37,7 +38,7 @@ class CreateAdminsTable extends Migration
             $table->string('name', 50)->unique();
             $table->string('slug', 50)->unique();
             $table->string('http_method')->nullable();
-            $table->text('http_path')->nullable();
+            $table->string('http_path', 50)->nullable();
             $table->timestamps();
         });
 
@@ -48,7 +49,7 @@ class CreateAdminsTable extends Migration
             $table->string('name', 50)->unique();
             $table->string('title', 50);
             $table->string('component', '50');
-            $table->string('icon', 50);
+            $table->string('icon', 50)->nullable();
             $table->string('path', 50)->nullable();
             $table->string('permission')->nullable();
             $table->boolean('is_hidden')->default(false);
@@ -104,6 +105,7 @@ class CreateAdminsTable extends Migration
     public function down()
     {
         Schema::dropIfExists('admin_users');
+        Schema::dropIfExists('admin_user_permissions');
         Schema::dropIfExists('admin_roles');
         Schema::dropIfExists('admin_permissions');
         Schema::dropIfExists('admin_menu');
