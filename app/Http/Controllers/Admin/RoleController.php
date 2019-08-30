@@ -20,9 +20,9 @@ class RoleController extends Controller
     public function store(RoleRequest $request)
     {
         $inputs = $request->validated();
-        Role::create($inputs);
+        $role = Role::create($inputs);
 
-        return $this->message('角色创建成功');
+        return $this->created(RoleResource::make($role));
     }
 
     public function show(Role $role)
@@ -39,18 +39,14 @@ class RoleController extends Controller
             $role->permissions()->sync($inputs['permissions']);
         }
 
-        return $this->message('角色更新成功');
+        return $this->created(RoleResource::make($role));
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy(Role $role)
     {
-        //
+        $role->delete();
+
+        return $this->noContent();
     }
 
     /**
