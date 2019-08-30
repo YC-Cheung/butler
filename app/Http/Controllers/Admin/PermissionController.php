@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Requests\Admin\PermissionRequest;
 use App\Http\Resources\Admin\PermissionResource;
 use App\Models\Permission;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class PermissionController extends Controller
@@ -18,9 +17,9 @@ class PermissionController extends Controller
     public function store(PermissionRequest $request)
     {
         $inputs = $request->validated();
-        Permission::create($inputs);
+        $permission = Permission::create($inputs);
 
-        return $this->message('权限创建成功');
+        return $this->created(PermissionResource::make($permission));
     }
 
     public function show(Permission $permission)
@@ -33,11 +32,13 @@ class PermissionController extends Controller
         $inputs = $request->validated();
         $permission->update($inputs);
 
-        return $this->message('权限更新成功');
+        return $this->created(PermissionResource::make($permission));
     }
 
-    public function destroy($id)
+    public function destroy(Permission $permission)
     {
-        //
+        $permission->delete();
+
+        return $this->noContent();
     }
 }

@@ -14,21 +14,7 @@ class Permission extends Model
 
     public function roles()
     {
-        return $this->belongsToMany('admin_role_permissions', 'permission_id', 'role_id')->withTimestamps();
-    }
-
-    public function getHttpPathAttribute($path)
-    {
-        return str_replace("\r\n", "\n", $path);
-    }
-
-    public function setHttpPathAttribute($httpPath)
-    {
-        if (is_array($httpPath)) {
-            $this->attributes['http_path'] = implode("\n", $httpPath) ?: null;
-        } else {
-            $this->attributes['http_path'] = $httpPath;
-        }
+        return $this->belongsToMany(Permission::class, 'admin_role_permissions', 'permission_id', 'role_id')->withTimestamps();
     }
 
     public function setHttpMethodAttribute($method)
@@ -47,5 +33,14 @@ class Permission extends Model
         }
 
         return $method;
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($permission) {
+            $permission->roles()->detach();
+        });
     }
 }
