@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Traits\ModelTree;
+use App\Utils\Admin;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class Menu extends Model
 {
@@ -46,5 +48,21 @@ class Menu extends Model
             ->when($this->treeWithAuth, function (Builder $query) {
                 $query->with('roles');
             });
+    }
+
+    protected function ignoreTreeNode($node): bool
+    {
+        if (!$this->treeWithAuth) {
+            return false;
+        }
+
+        if (
+            Admin::user()->visible($node['roles']) &&
+            (empty($node['permission']) ?: Admin::user()->can($node['permission']))
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

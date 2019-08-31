@@ -126,10 +126,14 @@ trait ModelTree
         $branch = [];
 
         if (empty($nodes)) {
-            return $this->allNodes();
+            $nodes =  $this->allNodes();
         }
 
         foreach ($nodes as $node) {
+            if ($this->ignoreTreeNode($node)) {
+                continue;
+            }
+
             if ($node[$this->parentColumn] == $parentId) {
                 $children = $this->buildNestedArray($nodes, $node[$this->getKeyName()]);
                 $node['children'] = $children;
@@ -146,8 +150,7 @@ trait ModelTree
      */
     public function allNodes()
     {
-        //        $this->getAllNodes();
-        $this->allNodesQuery()->get()->array();
+        return $this->allNodesQuery()->get()->toArray();
     }
 
     protected function allNodesQuery()
@@ -165,6 +168,15 @@ trait ModelTree
         }
 
         return $self->orderByRaw($byOrder)->get()->toArray();
+    }
+
+    /**
+     * @param array $node
+     * @return bool
+     */
+    protected function ignoreTreeNode(array $node): bool
+    {
+        return false;
     }
 
     /**

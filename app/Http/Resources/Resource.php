@@ -60,8 +60,11 @@ class Resource extends JsonResource
         return in_array($relationship, $this->getIdsRelationship());
     }
 
-    public function whenIds($relationship)
+    public function whenIds($relationship, $isDefault = false)
     {
+        if (!$this->isNeedIds($relationship) && $isDefault) {
+            return static::collection($this->whenLoaded($relationship));
+        }
         return $this->when($this->isNeedIds($relationship), $this->resource->{$relationship}->pluck($this->idKey));
     }
 

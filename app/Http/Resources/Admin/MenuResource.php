@@ -9,7 +9,7 @@ class MenuResource extends Resource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return array
      */
     public function toArray($request)
@@ -20,7 +20,8 @@ class MenuResource extends Resource
             'name' => $this->name,
             'title' => $this->title,
             'path' => $this->path,
-            'component' => $this->component
+            'component' => $this->component,
+            'roles' => $this->whenIds('roles', true)
         ]);
     }
 }

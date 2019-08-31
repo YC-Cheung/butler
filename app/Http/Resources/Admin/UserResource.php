@@ -14,8 +14,7 @@ class UserResource extends Resource
             'username' => $this->username,
             'name' => $this->name,
             'avatar' => $this->avatar,
-            'roles' => RoleResource::collection($this->whenLoaded('roles')),
-            'roles_ids' => $this->whenIds('roles'),
+            'roles' => $this->whenIds('roles', true),
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at
         ]);

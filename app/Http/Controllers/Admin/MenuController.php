@@ -10,11 +10,11 @@ use App\Http\Controllers\Controller;
 
 class MenuController extends Controller
 {
-    public function index(Request $request)
+    public function index()
     {
-        $menu = $request->get('all') ? Menu::get() : Menu::paginate();
+        $data = MenuResource::collection(Menu::with('roles')->paginate())->withIds(['roles']);
 
-        return MenuResource::collection($menu);
+        return $this->success($data);
     }
 
     public function store(MenuRequest $request)
@@ -36,6 +36,10 @@ class MenuController extends Controller
         $inputs = $request->validated();
         $menu->update($inputs);
 
+        if (isset($inputs['roles'])) {
+            $menu->roles()->sync($inputs['roles']);
+        }
+
         return $this->created(MenuResource::make($menu));
     }
 
@@ -44,5 +48,12 @@ class MenuController extends Controller
         $menu->delete();
 
         return $this->noContent();
+    }
+
+    public function allMenu(Menu $menu)
+    {
+        $data = $menu->toTree();
+
+        return $this->success($data);
     }
 }

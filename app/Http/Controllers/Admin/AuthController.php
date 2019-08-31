@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\Admin\UserResource;
+use App\Models\Menu;
+use App\Utils\Admin;
+use App\Utils\CommonUtils;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,9 +34,19 @@ class AuthController extends Controller
         //
     }
 
-    public function userInfo()
+    public function userInfo(Menu $menu)
     {
-        $user = Auth::user();
-        return $this->success(UserResource::make($user));
+        $user = Admin::user()->load('roles');
+        $menuTree = $menu->treeWithAuth()->toTree();
+        $data = [
+            'id' => $user['id'],
+            'name' => $user['name'],
+            'username' => $user['name'],
+            'avatar' => $user['avatar'],
+            'introduction' => 'what!',
+            'roles' => Arr::pluck($user['roles'], 'slug'),
+            'menu' => CommonUtils::menuToVue($menuTree)
+        ];
+        return $this->success($data);
     }
 }
