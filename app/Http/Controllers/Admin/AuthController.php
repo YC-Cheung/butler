@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Resources\Admin\UserResource;
 use App\Models\Menu;
+use App\Models\Permission;
 use App\Utils\Admin;
 use App\Utils\CommonUtils;
 use Illuminate\Http\JsonResponse;
@@ -37,6 +38,13 @@ class AuthController extends Controller
     public function userInfo(Menu $menu)
     {
         $user = Admin::user()->load('roles');
+
+        if ($user->isAdministrator()) {
+            $perms = Permission::all()->pluck('slug');
+        } else {
+            $perms = $user->allPermissionSlug();
+        }
+
         $menuTree = $menu->treeWithAuth()->toTree();
         $data = [
             'id' => $user['id'],
@@ -45,8 +53,10 @@ class AuthController extends Controller
             'avatar' => $user['avatar'],
             'introduction' => 'what!',
             'roles' => Arr::pluck($user['roles'], 'slug'),
+            'perms' => $perms,
             'menu' => CommonUtils::menuToVue($menuTree)
         ];
+
         return $this->success($data);
     }
 }

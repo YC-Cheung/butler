@@ -25,6 +25,19 @@ trait HasPermissions
             ->values();
     }
 
+    public function allPermissionSlug()
+    {
+        return $this
+            ->roles()
+            ->with('permissions')
+            ->get()
+            ->pluck('permissions')
+            ->flatten()
+            ->merge($this->permissions)
+            ->unique('id')
+            ->pluck('slug');
+    }
+
     /**
      * @param $ability
      * @return bool

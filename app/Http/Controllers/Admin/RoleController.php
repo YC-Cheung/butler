@@ -12,9 +12,9 @@ class RoleController extends Controller
 {
     public function index(Request $request)
     {
-        $roles = $request->get('all') ? Role::get() : Role::paginate();
+        $data = RoleResource::collection(Role::with('permissions')->paginate())->withIds(['permissions']);
 
-        return RoleResource::collection($roles);
+        return $this->success($data);
     }
 
     public function store(RoleRequest $request)

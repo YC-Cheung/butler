@@ -35,6 +35,13 @@ class PermissionController extends Controller
         return $this->created(PermissionResource::make($permission));
     }
 
+    public function getOption()
+    {
+        $data = PermissionResource::collection(Permission::all())->hide(['created_at', 'updated_at']);
+
+        return $this->success($data);
+    }
+
     public function destroy(Permission $permission)
     {
         $permission->delete();

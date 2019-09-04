@@ -36,6 +36,8 @@ class UserController extends Controller
 
     public function show(Administrator $user)
     {
+//        $permSlug = $user->allPermissionSlug();
+//        return $permSlug;
         return $this->success(UserResource::make($user->load('roles'))->withIds(['roles']));
     }
 

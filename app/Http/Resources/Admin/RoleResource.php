@@ -18,7 +18,7 @@ class RoleResource extends Resource
             'id' => $this->id,
             'name' => $this->name,
             'slug' => $this->slug,
-            'permissions' => PermissionResource::collection($this->whenLoaded('permissions')),
+            'perms' => $this->whenIds('permissions', true),
             'created_at' => (string)$this->created_at,
             'updated_at' => (string)$this->updated_at,
         ]);
