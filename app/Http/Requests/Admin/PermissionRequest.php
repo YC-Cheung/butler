@@ -12,7 +12,7 @@ class PermissionRequest extends FormRequest
 
     public function rules()
     {
-        $id = (int)optional($this->route('permission'))->id;
+        $id = (int)optional($this->route('perm'))->id;
 
         $rules = [
             'name' => 'required|unique:admin_permissions,name,' . $id,

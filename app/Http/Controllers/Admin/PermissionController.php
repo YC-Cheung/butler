@@ -6,6 +6,7 @@ use App\Http\Requests\Admin\PermissionRequest;
 use App\Http\Resources\Admin\PermissionResource;
 use App\Models\Permission;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\JsonResponse;
 
 class PermissionController extends Controller
 {
@@ -27,12 +28,12 @@ class PermissionController extends Controller
         return PermissionResource::make($permission);
     }
 
-    public function update(PermissionRequest $request, Permission $permission)
+    public function update(PermissionRequest $request, Permission $perm)
     {
         $inputs = $request->validated();
-        $permission->update($inputs);
+        $perm->update($inputs);
 
-        return $this->created(PermissionResource::make($permission));
+        return $this->created(PermissionResource::make($perm));
     }
 
     public function getOption()
